@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pedamo Fresh</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .hero {
+      text-align: center;
+      padding: 50px 20px;
+      color: #b30000;
+    }
+    footer {
+      background-color: #b30000;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    .flavors {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin: 40px 0;
+    }
+    .flavor-card {
+      text-align: center;
+      padding: 15px;
+    }
+    .flavor-card img {
+      width: 100%;
+      max-width: 180px;
+      border-radius: 12px;
+    }
+    .logo {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .logo img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="p-3 bg-danger border-bottom">
+  <div class="container d-flex justify-content-between align-items-center">
+    <h2 class="mb-0 text-white">Pedamo Fresh</h2>
+    <nav>
+      <a href="shop.html" class="btn btn-outline-light">Shop</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Logo -->
+<div class="logo">
+  <img src="images/Pedamo logo.jfif" alt="Brand Logo">
+</div>
+
+<!-- Hero Section -->
+<section class="hero">
+  <h1>Welcome to Pedamo Fresh</h1>
+  <p>Refreshing and natural hibiscus drinks made just for you.</p>
+</section>
+
+<!-- Flavors Section -->
+<section class="container">
+  <h2 class="text-center mb-4">Our Flavors</h2>
+  <div id="flavors" class="flavors">
+    <!-- Flavors will be loaded dynamically here -->
+  </div>
+</section>
+
+<footer>
+  <p>📞 08068183847 | <i class="bi bi-instagram"></i> @pedamo_fresh</p>
+  <p>&copy; 2025 Pedamo Fresh. All rights reserved.</p>
+</footer>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- ✅ Dynamic Product Loader -->
+<script>
+  fetch('/api/products')
+    .then(response => response.json())
+    .then(products => {
+      const container = document.getElementById('flavors');
+      container.innerHTML = ''; // clear default
+      products.forEach(product => {
+        const card = document.createElement('div');
+        card.classList.add('flavor-card');
+        card.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <h5 class="mt-2">${product.name}</h5>
+          <p>${product.description}</p>
+        `;
+        container.appendChild(card);
+      });
+    })
+    .catch(err => console.error('Error loading products:', err));
+</script>
+
+</body>
+</html>

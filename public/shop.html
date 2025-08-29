@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop - Pedamo Fresh</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Header */
+    header {
+      background-color: #b30000; /* consistent red */
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 { margin: 0; font-size: 24px; }
+    nav { display: flex; gap: 20px; }
+    nav a { color: white; text-decoration: none; font-weight: bold; }
+
+    /* Centered logo under header */
+    .logo { text-align: center; margin: 15px 0; }
+    .logo img { max-width: 120px; }
+
+    h2 { text-align: center; margin: 20px 0; }
+
+    /* Products grid */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .product {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      background: #fff;
+    }
+    .product img { max-width: 100%; border-radius: 8px; }
+    .product h3 { margin: 10px 0; }
+    .product p { font-weight: bold; }
+    .product button {
+      background-color: #b30000;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .product button:hover { background-color: #990000; }
+
+    /* Footer */
+    footer {
+      background-color: #b30000;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    /* Slide-in Cart Panel */
+    #cartPanel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 320px;
+      height: 100%;
+      background: #fff;
+      box-shadow: -2px 0 8px rgba(0,0,0,0.3);
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 1000;
+
+      /* hidden by default, slide in with transform */
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+    #cartPanel.open {
+      transform: translateX(0);
+    }
+    #cartHeader {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    #cartHeader h2 { margin: 0; }
+    #closeCart {
+      font-size: 20px;
+      cursor: pointer;
+      color: #b30000; /* red close (×) */
+      font-weight: bold;
+      background: transparent;
+      border: none;
+      line-height: 1;
+    }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .remove-btn {
+      background-color: #b30000; /* same red as header */
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .remove-btn:hover { background-color: #990000; }
+
+    .cart-actions {
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .cart-actions button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #clearCart { background-color: gray; color: white; }
+    #checkout { background-color: #b30000; color: white; }
+    #checkout:hover { background-color: #990000; }
+  </style>
+</head>
+<body>
+
+  <!-- Header with Home + Cart links -->
+  <header>
+    <h1>Pedamo Fresh</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="#" id="cartBtn">Cart (<span id="cartCount">0</span>)</a>
+    </nav>
+  </header>
+
+  <!-- Centered Company Logo -->
+  <div class="logo">
+    <img src="images/Pedamo logo.jfif" alt="Company Logo">
+  </div>
+
+  <h2>Our Flavors</h2>
+
+  <!-- Products dynamically loaded -->
+  <div class="products" id="productsContainer"></div>
+
+  <!-- Slide-in Cart Panel -->
+  <aside id="cartPanel" aria-hidden="true">
+    <div id="cartHeader">
+      <h2>Your Cart</h2>
+      <button id="closeCart" aria-label="Close cart">&times;</button>
+    </div>
+    <div id="cartItems"></div>
+    <h3>Total: ₦<span id="cartTotal">0</span></h3>
+    <div class="cart-actions">
+      <button id="clearCart">Clear Cart</button>
+      <button id="checkout">Checkout</button>
+    </div>
+  </aside>
+
+  <footer>
+    <p>&copy; 2025 Roselle Drinks. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const cartBtn = document.getElementById('cartBtn');
+    const cartPanel = document.getElementById('cartPanel');
+    const closeCartBtn = document.getElementById('closeCart');
+    const productsContainer = document.getElementById('productsContainer');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    const cartCount = document.getElementById('cartCount');
+    const clearCartBtn = document.getElementById('clearCart');
+    const checkoutBtn = document.getElementById('checkout');
+
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Open/close slide-in cart
+    cartBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      cartPanel.classList.add('open');
+      cartPanel.setAttribute('aria-hidden', 'false');
+    });
+    closeCartBtn.addEventListener('click', () => {
+      cartPanel.classList.remove('open');
+      cartPanel.setAttribute('aria-hidden', 'true');
+    });
+
+    // Load products from backend
+    async function loadProducts() {
+      const res = await fetch('/api/products');
+      const products = await res.json();
+
+      productsContainer.innerHTML = '';
+      products.forEach(product => {
+        const div = document.createElement('div');
+        div.classList.add('product');
+        div.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <h3>${product.name}</h3>
+          <p>₦${product.price.toLocaleString()}</p>
+          <button onclick="addToCart(${product.id ?? 0}, '${product.name.replace(/'/g, "\\'")}', ${product.price})">Add to Cart</button>
+        `;
+        productsContainer.appendChild(div);
+      });
+    }
+
+    // Merge duplicates (xN)
+    function addToCart(id, name, price) {
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ id, name, price, quantity: 1 });
+      }
+      saveAndRender();
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      saveAndRender();
+    }
+
+    function clearCart() {
+      cart = [];
+      saveAndRender();
+    }
+
+    function saveAndRender() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+      renderCart();
+    }
+
+    function renderCart() {
+      cartItems.innerHTML = '';
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        total += item.price * item.quantity;
+
+        const row = document.createElement('div');
+        row.className = 'cart-item';
+        row.innerHTML = `
+          <span>${item.name} x${item.quantity}</span>
+          <span>₦${(item.price * item.quantity).toLocaleString()} 
+            <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
+          </span>
+        `;
+        cartItems.appendChild(row);
+      });
+
+      cartTotal.textContent = total.toLocaleString();
+      cartCount.textContent = cart.reduce((sum, it) => sum + it.quantity, 0);
+    }
+
+    clearCartBtn.addEventListener('click', clearCart);
+    checkoutBtn.addEventListener('click', () => {
+      alert('Checkout functionality will connect to backend soon!');
+    });
+
+    // Init
+    loadProducts();
+    renderCart();
+  </script>
+</body>
+</html>
