@@ -11,6 +11,19 @@
       padding: 50px 20px;
       color: #b30000;
     }
+    .hero-with-images {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+    .hero-with-images img {
+      width: 325px;   /* 🔥 Increased size */
+      height: 325px;  /* 🔥 Increased size */
+      border-radius: 12px;
+      object-fit: cover;
+    }
     footer {
       background-color: #b30000;
       color: white;
@@ -29,7 +42,7 @@
     }
     .flavor-card img {
       width: 100%;
-      max-width: 180px;
+      max-width: 250px; /* ✅ Same size as mission/vision */
       border-radius: 12px;
     }
     .logo {
@@ -61,15 +74,21 @@
   <img src="images/Pedamo logo.jfif" alt="Brand Logo">
 </div>
 
-<!-- Hero Section -->
+<!-- Hero Section with Mission & Vision Images -->
 <section class="hero">
-  <h1>Welcome to Pedamo Fresh</h1>
-  <p>Refreshing and natural hibiscus drinks made just for you.</p>
+  <div class="hero-with-images">
+    <img src="images/Mission.jpeg" alt="Our Mission">
+    <div>
+      <h1>Welcome to Pedamo Fresh</h1>
+      <p>Refreshing and natural hibiscus drinks made just for you.</p>
+    </div>
+    <img src="images/Vision.jpeg" alt="Our Vision">
+  </div>
 </section>
 
 <!-- Flavors Section -->
 <section class="container">
-  <h2 class="text-center mb-4">Our Flavors</h2>
+  <h2 class="text-center mb-4">Our Variants</h2>
   <div id="flavors" class="flavors">
     <!-- Flavors will be loaded dynamically here -->
   </div>

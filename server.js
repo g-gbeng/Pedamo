@@ -10,25 +10,25 @@ const products = [
   {
     name: "Sweet Roselle",
     description: "A rich sweet flavor for lovers of bold taste.",
-    price: 1500,
+    price: 8500,
     image: "/images/Pedamo 2.jfif",
   },
   {
     name: "Mild Roselle",
     description: "Gentle and refreshing hibiscus blend.",
-    price: 1400,
+    price: 8000,
     image: "/images/Pedamo 2.jfif",
   },
   {
     name: "Hot Roselle",
     description: "A spicy twist with natural hibiscus tang.",
-    price: 1600,
+    price: 9000,
     image: "/images/Pedamo 2.jfif",
   },
   {
     name: "Semi-Sweet Roselle",
     description: "Balanced sweetness for every occasion.",
-    price: 1450,
+    price: 9000,
     image: "/images/Pedamo 2.jfif",
   },
 ];
