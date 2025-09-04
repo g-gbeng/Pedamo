@@ -45,35 +45,25 @@
     .nav-right a:hover, .nav-right button:hover {
       background: rgba(255,255,255,0.12);
     }
-    /* Cart count badge (red) */
+    /* Cart count badge */
     .badge {
       display: inline-block;
       min-width: 18px;
       padding: 2px 6px;
       border-radius: 999px;
-      background: #ff2d2d; /* red badge */
+      background: #ff2d2d;
       color: #fff;
       font-size: 12px;
       font-weight: 700;
       margin-left: 4px;
     }
 
-    /* Centered logo under header (unchanged) */
-    .logo {
-      text-align: center;
-      margin: 15px 0;
-    }
-    .logo img {
-      max-width: 120px;
-    }
+    .logo { text-align: center; margin: 15px 0; }
+    .logo img { max-width: 120px; }
 
-    /* Section title */
-    h2 {
-      text-align: center;
-      margin: 20px 0;
-    }
+    h2 { text-align: center; margin: 20px 0; }
 
-    /* Product grid: side-by-side, neat cards */
+    /* Product grid */
     .products {
       max-width: 1100px;
       margin: 0 auto 40px auto;
@@ -92,14 +82,14 @@
     }
     .product img {
       width: 100%;
-      height: 180px;           /* unify heights so cards align */
+      height: 180px;
       object-fit: cover;
       border-radius: 8px;
     }
     .product h3 { margin: 10px 0; }
     .product p { font-weight: bold; margin: 6px 0 12px 0; }
     .product button {
-      background: #b30000;     /* red add-to-cart button */
+      background: #b30000;
       color: #fff;
       border: none;
       padding: 8px 12px;
@@ -109,7 +99,7 @@
     }
     .product button:hover { background: #990000; }
 
-    /* Slide-in Cart Panel (unchanged behavior) */
+    /* Cart panel */
     #cartPanel {
       position: fixed;
       top: 0; right: 0;
@@ -134,7 +124,6 @@
       color: #b30000; font-weight: bold;
     }
 
-    /* Cart items with image next to name */
     .cart-item {
       display: grid;
       grid-template-columns: 42px 1fr auto;
@@ -170,9 +159,12 @@
     }
     #clearCart { background: gray; color: #fff; }
     #checkout  { background: #b30000; color: #fff; }
-    #checkout:hover { background: #990000; }
+    #checkout:hover:enabled { background: #990000; }
+    #checkout:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
 
-    /* Footer - RED */
     footer {
       background: #b30000;
       color: #fff;
@@ -183,8 +175,6 @@
   </style>
 </head>
 <body>
-
-  <!-- Header (brand left, Home + Cart right) -->
   <header>
     <div class="brand">Pedamo Fresh</div>
     <div class="nav-right">
@@ -193,17 +183,14 @@
     </div>
   </header>
 
-  <!-- Centered Company Logo (unchanged) -->
   <div class="logo">
     <img src="images/Pedamo logo.jfif" alt="Company Logo">
   </div>
 
   <h2>Available Variants</h2>
 
-  <!-- Products dynamically loaded -->
   <div id="productsContainer" class="products"></div>
 
-  <!-- Slide-in Cart Panel -->
   <aside id="cartPanel" aria-hidden="true">
     <div id="cartHeader">
       <h2>Your Cart</h2>
@@ -213,11 +200,10 @@
     <h3>Total: ₦<span id="cartTotal">0</span></h3>
     <div class="cart-actions">
       <button id="clearCart">Clear Cart</button>
-      <button id="checkout">Checkout</button>
+      <button id="checkout" disabled>Checkout</button>
     </div>
   </aside>
 
-  <!-- Footer (red) -->
   <footer>
     <p>&copy; 2025 Pedamo Fresh. All rights reserved.</p>
   </footer>
@@ -235,7 +221,6 @@
 
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-    // Open/close slide-in cart
     cartBtn.addEventListener('click', (e) => {
       e.preventDefault();
       cartPanel.classList.add('open');
@@ -246,7 +231,6 @@
       cartPanel.setAttribute('aria-hidden', 'true');
     });
 
-    // Load products from backend
     async function loadProducts() {
       const res = await fetch('/api/products');
       const products = await res.json();
@@ -263,7 +247,7 @@
         `;
         card.querySelector('button').addEventListener('click', () => {
           addToCart({
-            id: product.id ?? product.name,   // fallback
+            id: product.id ?? product.name,
             name: product.name,
             price: Number(product.price),
             image: product.image
@@ -275,7 +259,6 @@
       renderCart();
     }
 
-    // Cart logic with quantity merge + images
     function addToCart(item) {
       const existing = cart.find(i => i.id === item.id);
       if (existing) {
@@ -325,19 +308,22 @@
 
       cartTotal.textContent = total.toLocaleString();
       cartCount.textContent = count;
+
+      // Enable/disable checkout based on cart state
+      checkoutBtn.disabled = cart.length === 0;
     }
 
-    // Wire buttons
     clearCartBtn.addEventListener('click', clearCart);
+
     checkoutBtn.addEventListener('click', () => {
-      alert('Checkout functionality will connect to backend soon!');
+      if (cart.length > 0) {
+        window.location.href = "checkout.html";
+      }
     });
 
-    // Init
     loadProducts();
     renderCart();
 
-    // Expose remove for inline onclick
     window.removeFromCart = removeFromCart;
   </script>
 </body>

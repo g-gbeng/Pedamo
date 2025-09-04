@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Pedamo Fresh</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+    }
+    header {
+      background-color: #b30000;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+    }
+    header a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+    }
+    .logo { text-align: center; margin: 15px 0; }
+    .logo img { max-width: 120px; }
+
+    
+    .checkout-container {
+      width: 90%;
+      max-width: 500px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .checkout-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    .card-row {
+      display: flex;
+      gap: 10px;
+    }
+    .card-row input {
+      flex: 1;
+    }
+    #cardType {
+      margin-bottom: 15px;
+      height: 30px;
+    }
+    #cardType svg {
+      height: 25px;
+    }
+    .order-summary {
+      background: #f1f1f1;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    .order-summary strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+    .order-summary ul {
+      margin: 0;
+      padding-left: 20px;
+      text-align: left;
+    }
+    .toggle-btn {
+      background: none;
+      border: none;
+      color: #b30000;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 8px;
+      padding: 0;
+    }
+    .error {
+      color: red;
+      font-size: 12px;
+      margin-top: -10px;
+      margin-bottom: 10px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #b30000;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Pedamo Fresh</h1>
+    <a href="shop.html">Back to Shop</a>
+  </header>
+
+  <div class="logo">
+    <img src="images/Pedamo logo.jfif" alt="Company Logo">
+  </div>
+
+  <div class="checkout-container">
+    <h2>Checkout</h2>
+    <div class="order-summary" id="orderSummary">
+      <button type="button" class="toggle-btn" onclick="toggleSummary()">Show/Hide Order Summary</button>
+      <div id="summaryContent">
+        <strong>Order Summary</strong>
+        <ul id="orderItems"></ul>
+        <p><strong>Total:</strong> ₦0</p>
+      </div>
+    </div>
+
+    <form id="checkoutForm">
+      <label for="name">Customer Name</label>
+      <input type="text" id="name" required>
+
+      <label for="address">Delivery Address</label>
+      <input type="text" id="address" required>
+
+      <label for="contact">Contact Number</label>
+      <input type="text" id="contact" maxlength="11" required>
+
+      <label for="cardNumber">Card Number</label>
+      <input type="text" id="cardNumber" maxlength="19" placeholder="####-####-####-####" required>
+      <div id="cardType"></div>
+
+      <div class="card-row">
+        <div>
+          <label for="expiry">Expiry Date (MM/YY)</label>
+          <input type="text" id="expiry" maxlength="5" placeholder="MM/YY" required>
+          <div id="expiryError" class="error"></div>
+        </div>
+        <div>
+          <label for="cvv">CVV</label>
+          <input type="password" id="cvv" maxlength="3" required>
+        </div>
+      </div>
+
+      <button type="submit">Place Order</button>
+    </form>
+  </div>
+
+  <script>
+    // Load cart for summary
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const orderItems = document.getElementById("orderItems");
+    let total = 0;
+
+    cart.forEach(item => {
+      const li = document.createElement("li");
+      li.textContent = `${item.name} (x${item.quantity}) - ₦${item.price * item.quantity}`;
+      orderItems.appendChild(li);
+      total += item.price * item.quantity;
+    });
+
+    document.querySelector("#orderSummary p").innerHTML = `<strong>Total:</strong> ₦${total}`;
+
+    // Collapsible summary
+    function toggleSummary() {
+      const content = document.getElementById("summaryContent");
+      content.style.display = (content.style.display === "none") ? "block" : "none";
+    }
+
+    // Contact number: digits only, max 11
+    document.getElementById("contact").addEventListener("input", function(e) {
+      this.value = this.value.replace(/\D/g, "").substring(0,11);
+    });
+
+    // Card number formatting + inline SVG detection
+    const cardNumberInput = document.getElementById("cardNumber");
+    const cardTypeDiv = document.getElementById("cardType");
+    cardNumberInput.addEventListener("input", function(e) {
+      let value = this.value.replace(/\D/g, "").substring(0, 16);
+      let formatted = value.match(/.{1,4}/g)?.join("-") || "";
+      this.value = formatted;
+
+      cardTypeDiv.innerHTML = ""; // reset
+      if (/^4/.test(value)) {
+        cardTypeDiv.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 32"><rect width="48" height="32" fill="#1a1f71"/><text x="24" y="21" fill="#fff" font-size="14" text-anchor="middle" font-family="Arial">VISA</text></svg>`;
+      } else if (/^5[1-5]/.test(value)) {
+        cardTypeDiv.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 32"><circle cx="18" cy="16" r="10" fill="#eb001b"/><circle cx="30" cy="16" r="10" fill="#f79e1b" fill-opacity="0.85"/></svg>`;
+      } else if (/^5060|^5078|^6500/.test(value)) {
+        cardTypeDiv.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 32"><rect width="48" height="32" fill="#41a017"/><text x="24" y="21" fill="#fff" font-size="14" text-anchor="middle" font-family="Arial">VERVE</text></svg>`;
+      }
+    });
+
+    // Expiry date formatting and validation
+    const expiryInput = document.getElementById("expiry");
+    const expiryError = document.getElementById("expiryError");
+    expiryInput.addEventListener("input", function(e) {
+      expiryError.textContent = "";
+      let value = this.value.replace(/\D/g, "").substring(0,4);
+      if (value.length >= 3) {
+        this.value = value.substring(0,2) + "/" + value.substring(2);
+      } else {
+        this.value = value;
+      }
+
+      if (this.value.length === 5) {
+        const month = parseInt(this.value.substring(0,2), 10);
+        if (month < 1 || month > 12) {
+          expiryError.textContent = "Invalid month (must be 01–12)";
+        }
+      }
+    });
+
+    function isCardExpired(expiry) {
+      const [month, year] = expiry.split("/");
+      if (!month || !year) return true;
+      const expMonth = parseInt(month, 10);
+      const expYear = 2000 + parseInt(year, 10);
+      if (expMonth < 1 || expMonth > 12) return true;
+      const now = new Date();
+      const currentMonth = now.getMonth() + 1;
+      const currentYear = now.getFullYear();
+      return expYear < currentYear || (expYear === currentYear && expMonth < currentMonth);
+    }
+
+    // Form submission
+    document.getElementById("checkoutForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const expiry = document.getElementById("expiry").value;
+
+      if (isCardExpired(expiry)) {
+        alert("This card is expired. Please use a valid card.");
+        return;
+      }
+
+      alert("Order placed successfully!");
+      localStorage.removeItem("cart");
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>
