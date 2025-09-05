@@ -1,0 +1,177 @@
+[
+  {
+    "customerName": "Gbenga",
+    "address": "ffff",
+    "contact": "08144843093",
+    "cardNumber": "**** **** **** 6333",
+    "items": [
+      {
+        "id": "Hot Roselle",
+        "name": "Hot Roselle",
+        "price": 9000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 1
+      },
+      {
+        "id": "Semi-Sweet Roselle",
+        "name": "Semi-Sweet Roselle",
+        "price": 9000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 2
+      }
+    ],
+    "total": 27000,
+    "id": "1757064473712",
+    "status": "delivered",
+    "createdAt": "2025-09-05T09:27:53.712Z"
+  },
+  {
+    "customerName": "Tobi",
+    "address": "ss",
+    "contact": "07099778899",
+    "cardNumber": "**** **** **** 3333",
+    "items": [
+      {
+        "id": "Mild Roselle",
+        "name": "Mild Roselle",
+        "price": 8000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 1
+      },
+      {
+        "id": "Hot Roselle",
+        "name": "Hot Roselle",
+        "price": 9000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 1
+      },
+      {
+        "id": "Semi-Sweet Roselle",
+        "name": "Semi-Sweet Roselle",
+        "price": 9000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 1
+      }
+    ],
+    "total": 26000,
+    "id": "1757065481839",
+    "status": "delivered",
+    "createdAt": "2025-09-05T09:44:41.839Z"
+  },
+  {
+    "customerName": "Tolu",
+    "address": "ffff",
+    "contact": "08144843093",
+    "cardNumber": "**** **** **** 1111",
+    "items": [
+      {
+        "id": "Semi-Sweet Roselle",
+        "name": "Semi-Sweet Roselle",
+        "price": 9000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 1
+      },
+      {
+        "id": "Hot Roselle",
+        "name": "Hot Roselle",
+        "price": 9000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 1
+      }
+    ],
+    "total": 18000,
+    "id": "1757065894411",
+    "status": "delivered",
+    "createdAt": "2025-09-05T09:51:34.411Z"
+  },
+  {
+    "customerName": "Gbenga189",
+    "address": "ffff",
+    "contact": "08144843093",
+    "cardNumber": "**** **** **** 3333",
+    "items": [
+      {
+        "id": "Hot Roselle",
+        "name": "Hot Roselle",
+        "price": 9000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 1
+      },
+      {
+        "id": "Semi-Sweet Roselle",
+        "name": "Semi-Sweet Roselle",
+        "price": 9000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 1
+      },
+      {
+        "id": "Mild Roselle",
+        "name": "Mild Roselle",
+        "price": 8000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 1
+      }
+    ],
+    "total": 26000,
+    "id": "1757067643284",
+    "status": "active",
+    "createdAt": "2025-09-05T10:20:43.284Z"
+  },
+  {
+    "customerName": "Gbenga",
+    "address": "ffff",
+    "contact": "08144843093",
+    "cardNumber": "**** **** **** 7990",
+    "items": [
+      {
+        "id": "Hot Roselle",
+        "name": "Hot Roselle",
+        "price": 9000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 1
+      },
+      {
+        "id": "Mild Roselle",
+        "name": "Mild Roselle",
+        "price": 8000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 2
+      },
+      {
+        "id": "Semi-Sweet Roselle",
+        "name": "Semi-Sweet Roselle",
+        "price": 9000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 1
+      }
+    ],
+    "total": 34000,
+    "id": 1757093359276,
+    "status": "Pending"
+  },
+  {
+    "customerName": "Tolu",
+    "address": "ffff",
+    "contact": "08144843093",
+    "cardNumber": "**** **** **** 1111",
+    "items": [
+      {
+        "id": "Semi-Sweet Roselle",
+        "name": "Semi-Sweet Roselle",
+        "price": 9000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 1
+      },
+      {
+        "id": "Hot Roselle",
+        "name": "Hot Roselle",
+        "price": 9000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 1
+      }
+    ],
+    "total": 18000,
+    "id": 1757095826322,
+    "status": "Pending"
+  }
+]

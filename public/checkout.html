@@ -30,7 +30,6 @@
     .logo { text-align: center; margin: 15px 0; }
     .logo img { max-width: 120px; }
 
-    
     .checkout-container {
       width: 90%;
       max-width: 500px;
@@ -112,7 +111,6 @@
       cursor: pointer;
       border-radius: 5px;
     }
-    
   </style>
 </head>
 <body>
@@ -225,36 +223,71 @@
       if (this.value.length === 5) {
         const month = parseInt(this.value.substring(0,2), 10);
         if (month < 1 || month > 12) {
-          expiryError.textContent = "Invalid month (must be 01–12)";
+          expiryError.textContent = "Invalid month";
         }
       }
     });
 
-    function isCardExpired(expiry) {
+    function isExpiryInvalid(expiry) {
       const [month, year] = expiry.split("/");
       if (!month || !year) return true;
+
       const expMonth = parseInt(month, 10);
       const expYear = 2000 + parseInt(year, 10);
-      if (expMonth < 1 || expMonth > 12) return true;
       const now = new Date();
       const currentMonth = now.getMonth() + 1;
       const currentYear = now.getFullYear();
-      return expYear < currentYear || (expYear === currentYear && expMonth < currentMonth);
+
+      if (expMonth < 1 || expMonth > 12) return true;
+      if (expYear < currentYear) return true;
+      if (expYear === currentYear && expMonth < currentMonth) return true;
+
+      return false;
     }
 
-    // Form submission
-    document.getElementById("checkoutForm").addEventListener("submit", function(e) {
+    // Form submission (integrated with backend)
+    document.getElementById("checkoutForm").addEventListener("submit", async function(e) {
       e.preventDefault();
-      const expiry = document.getElementById("expiry").value;
 
-      if (isCardExpired(expiry)) {
-        alert("This card is expired. Please use a valid card.");
+      const expiry = document.getElementById("expiry").value;
+      const cardNumber = document.getElementById("cardNumber").value.replace(/\D/g, "");
+
+      if (cardNumber.length !== 16) {
+        alert("Provide a valid card number.");
         return;
       }
 
-      alert("Order placed successfully!");
-      localStorage.removeItem("cart");
-      window.location.href = "index.html";
+      if (isExpiryInvalid(expiry)) {
+        alert("Invalid or expired card date. Please check month and year.");
+        return;
+      }
+
+      const orderData = {
+        customerName: document.getElementById("name").value,
+        address: document.getElementById("address").value,
+        contact: document.getElementById("contact").value,
+        cardNumber: "**** **** **** " + cardNumber.slice(-4),
+        items: cart,
+        total: total
+      };
+
+      try {
+        const response = await fetch("/api/orders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderData)
+        });
+
+        if (!response.ok) throw new Error("Failed to place order");
+
+        const result = await response.json();
+        alert(result.message);
+
+        localStorage.removeItem("cart");
+        window.location.href = "index.html"; // ✅ redirect customer to homepage
+      } catch (error) {
+        alert("Error placing order: " + error.message);
+      }
     });
   </script>
 </body>
