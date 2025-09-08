@@ -223,7 +223,7 @@
       if (this.value.length === 5) {
         const month = parseInt(this.value.substring(0,2), 10);
         if (month < 1 || month > 12) {
-          expiryError.textContent = "Invalid month";
+          expiryError.textContent = "";
         }
       }
     });

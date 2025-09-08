@@ -37,12 +37,20 @@
     }
     button {
       padding: 6px 10px;
-      background: #28a745;
-      color: white;
       border: none;
       border-radius: 3px;
       cursor: pointer;
       font-size: 12px;
+      margin-right: 5px;
+      width: 70px; /* ✅ ensures both buttons are equal width */
+    }
+    .deliver-btn {
+      background: #28a745;
+      color: white;
+    }
+    .delete-btn {
+      background: #dc3545;
+      color: white;
     }
     button:disabled {
       background: #aaa;
@@ -107,7 +115,7 @@
               <th>Items</th>
               <th>Total</th>
               <th>Date</th>
-              ${allowDeliver ? "<th>Action</th>" : ""}
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -124,7 +132,10 @@
             <td>${itemsList}</td>
             <td>₦${order.total}</td>
             <td>${new Date(order.createdAt).toLocaleString()}</td>
-            ${allowDeliver ? `<td><button onclick="markDelivered('${order.id}')">Mark as Delivered</button></td>` : ""}
+            <td>
+              ${allowDeliver ? `<button class="deliver-btn" onclick="markDelivered('${order.id}')">Delivered</button>` : ""}
+              <button class="delete-btn" onclick="deleteOrder('${order.id}')">Delete</button>
+            </td>
           </tr>
         `;
       });
@@ -143,6 +154,24 @@
           fetchOrders(); // Refresh table
         } else {
           alert("Failed to update order.");
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    async function deleteOrder(orderId) {
+      if (!confirm("Are you sure you want to permanently delete this order?")) return;
+
+      try {
+        const res = await fetch(`/api/orders/${orderId}`, {
+          method: "DELETE"
+        });
+        if (res.ok) {
+          alert("Order deleted successfully!");
+          fetchOrders(); // Refresh table
+        } else {
+          alert("Failed to delete order.");
         }
       } catch (err) {
         console.error(err);

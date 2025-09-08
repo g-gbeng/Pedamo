@@ -1,0 +1,29 @@
+[
+  {
+    "customerName": "Testing",
+    "address": "ss",
+    "contact": "08144843093",
+    "cardNumber": "**** **** **** 7000",
+    "items": [
+      {
+        "id": "Semi-Sweet Roselle",
+        "name": "Semi-Sweet Roselle",
+        "price": 9000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 1
+      },
+      {
+        "id": "Hot Roselle",
+        "name": "Hot Roselle",
+        "price": 9000,
+        "image": "/images/Pedamo 2.jfif",
+        "quantity": 1
+      }
+    ],
+    "total": 18000,
+    "id": "1757343619485",
+    "status": "delivered",
+    "createdAt": "2025-09-08T15:00:19.485Z",
+    "deletedAt": "2025-09-08T15:00:34.505Z"
+  }
+]

@@ -1,97 +1,155 @@
 const express = require("express");
-const basicAuth = require("express-basic-auth");
-const path = require("path");
-require("dotenv").config();
 const fs = require("fs");
+const path = require("path");
+const bodyParser = require("body-parser");
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = 5000;
 
 // Middleware
-app.use(express.json());
 app.use(express.static("public"));
+app.use(bodyParser.json());
 
-// Products data
+// Unified products data
 const products = [
   {
     name: "Sweet Roselle",
     description: "A rich sweet flavor for lovers of bold taste.",
     price: 8500,
-    image: "/images/Pedamo 2.jfif",
+    image: "/images/Sweet.jpg",
   },
   {
     name: "Mild Roselle",
     description: "Gentle and refreshing hibiscus blend.",
     price: 8000,
-    image: "/images/Pedamo 2.jfif",
+    image: "/images/Mild.jpg",
   },
   {
     name: "Hot Roselle",
     description: "A spicy twist with natural hibiscus tang.",
     price: 9000,
-    image: "/images/Pedamo 2.jfif",
+    image: "/images/Hot.jpg",
   },
   {
     name: "Semi-Sweet Roselle",
     description: "Balanced sweetness for every occasion.",
     price: 9000,
-    image: "/images/Pedamo 2.jfif",
+    image: "/images/SemiSweet.jpg",
   },
 ];
 
-// Products API
+// Products endpoint
 app.get("/api/products", (req, res) => {
   res.json(products);
 });
 
-// Orders API
+// Paths to store orders
 const ordersFile = path.join(__dirname, "orders.json");
+const deletedOrdersFile = path.join(__dirname, "deleted_orders.json");
 
-// Save order (public - customers can post orders)
-app.post("/api/orders", (req, res) => {
-  let orders = [];
-  if (fs.existsSync(ordersFile)) {
-    orders = JSON.parse(fs.readFileSync(ordersFile));
+// Ensure orders.json and deleted_orders.json exist
+if (!fs.existsSync(ordersFile)) {
+  fs.writeFileSync(ordersFile, "[]", "utf8");
+}
+if (!fs.existsSync(deletedOrdersFile)) {
+  fs.writeFileSync(deletedOrdersFile, "[]", "utf8");
+}
+
+// Helper to safely read orders
+function readOrders() {
+  try {
+    const data = fs.readFileSync(ordersFile, "utf8");
+    return JSON.parse(data || "[]");
+  } catch (err) {
+    return [];
   }
+}
 
-  const newOrder = { ...req.body, id: Date.now(), status: "Pending" };
-  orders.push(newOrder);
+// Helper to safely read deleted orders
+function readDeletedOrders() {
+  try {
+    const data = fs.readFileSync(deletedOrdersFile, "utf8");
+    return JSON.parse(data || "[]");
+  } catch (err) {
+    return [];
+  }
+}
 
-  fs.writeFileSync(ordersFile, JSON.stringify(orders, null, 2));
+// Save order
+app.post("/api/orders", (req, res) => {
+  try {
+    const newOrder = req.body;
+    const orders = readOrders();
 
-  res.json({ message: "Order placed successfully", order: newOrder });
+    orders.push({
+      ...newOrder,
+      id: Date.now().toString(), // unique string ID
+      status: "active",          // default status
+      createdAt: new Date().toISOString(),
+    });
+
+    fs.writeFileSync(ordersFile, JSON.stringify(orders, null, 2), "utf8");
+    res.json({ message: "Order saved successfully!" });
+  } catch (err) {
+    res.status(500).json({ message: "Error saving order" });
+  }
 });
 
-// Get all orders (protected - admin only)
-app.get(
-  "/api/orders",
-  basicAuth({
-    users: { [process.env.ADMIN_USER]: process.env.ADMIN_PASS },
-    challenge: true,
-  }),
-  (req, res) => {
-    if (fs.existsSync(ordersFile)) {
-      const orders = JSON.parse(fs.readFileSync(ordersFile));
-      res.json(orders);
-    } else {
-      res.json([]);
+// Fetch all orders
+app.get("/api/orders", (req, res) => {
+  const orders = readOrders();
+  res.json(orders);
+});
+
+// Mark order as delivered
+app.put("/api/orders/:id/deliver", (req, res) => {
+  try {
+    const orders = readOrders();
+    const orderIndex = orders.findIndex(o => o.id === req.params.id);
+
+    if (orderIndex === -1) {
+      return res.status(404).json({ error: "Order not found" });
     }
-  }
-);
 
-// Protect the admin page (orders.html)
-app.get(
-  "/orders.html",
-  basicAuth({
-    users: { [process.env.ADMIN_USER]: process.env.ADMIN_PASS },
-    challenge: true,
-  }),
-  (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "orders.html"));
-  }
-);
+    orders[orderIndex].status = "delivered";
 
-// Start server
+    fs.writeFileSync(ordersFile, JSON.stringify(orders, null, 2), "utf8");
+    res.json({ message: "Order marked as delivered" });
+  } catch (err) {
+    res.status(500).json({ error: "Error updating order" });
+  }
+});
+
+// ✅ Delete order permanently & log it to deleted_orders.json
+app.delete("/api/orders/:id", (req, res) => {
+  try {
+    let orders = readOrders();
+    const orderIndex = orders.findIndex(o => o.id === req.params.id);
+
+    if (orderIndex === -1) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    // Get deleted order
+    const [deletedOrder] = orders.splice(orderIndex, 1);
+
+    // Append deleted order to deleted_orders.json
+    const deletedOrders = readDeletedOrders();
+    deletedOrders.push({
+      ...deletedOrder,
+      deletedAt: new Date().toISOString(),
+    });
+    fs.writeFileSync(deletedOrdersFile, JSON.stringify(deletedOrders, null, 2), "utf8");
+
+    // Save updated orders.json
+    fs.writeFileSync(ordersFile, JSON.stringify(orders, null, 2), "utf8");
+
+    res.json({ message: "Order deleted successfully and logged" });
+  } catch (err) {
+    res.status(500).json({ error: "Error deleting order" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
