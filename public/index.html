@@ -19,8 +19,8 @@
       flex-wrap: wrap;
     }
     .hero-with-images img {
-      width: 305px;   /* 🔥 Increased size */
-      height: 305px;  /* 🔥 Increased size */
+      width: 305px;  
+      height: 305px; 
       border-radius: 12px;
       object-fit: cover;
     }
@@ -42,7 +42,7 @@
     }
     .flavor-card img {
       width: 100%;
-      max-width: 250px; /* ✅ Same size as mission/vision */
+      max-width: 250px; 
       border-radius: 12px;
     }
     .logo {
@@ -59,7 +59,7 @@
 </head>
 <body>
 
-<!-- Header -->
+
 <header class="p-3 bg-danger border-bottom">
   <div class="container d-flex justify-content-between align-items-center">
     <h2 class="mb-0 text-white">Pedamo Fresh</h2>
@@ -69,12 +69,12 @@
   </div>
 </header>
 
-<!-- Logo -->
+
 <div class="logo">
   <img src="images/Pedamo logo.jfif" alt="Brand Logo">
 </div>
 
-<!-- Hero Section with Mission & Vision Images -->
+
 <section class="hero">
   <div class="hero-with-images">
     <div>
@@ -86,11 +86,11 @@
   </div>
 </section>
 
-<!-- Flavors Section -->
+
 <section class="container">
   <h2 class="text-center mb-4">Our Variants</h2>
   <div id="flavors" class="flavors">
-    <!-- Flavors will be loaded dynamically here -->
+    
   </div>
 </section>
 
@@ -102,13 +102,13 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- ✅ Dynamic Product Loader -->
+
 <script>
   fetch('/api/products')
     .then(response => response.json())
     .then(products => {
       const container = document.getElementById('flavors');
-      container.innerHTML = ''; // clear default
+      container.innerHTML = ''; 
       products.forEach(product => {
         const card = document.createElement('div');
         card.classList.add('flavor-card');

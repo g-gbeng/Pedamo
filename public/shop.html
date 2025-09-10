@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shop - Pedamo Fresh</title>
   <style>
-    /* Base */
+    
     body {
       font-family: Arial, sans-serif;
       margin: 0; padding: 0;
@@ -13,7 +13,7 @@
       color: #111;
     }
 
-    /* Header - RED, brand left, Home+Cart right */
+    
     header {
       background: #b30000;
       color: #fff;
@@ -45,7 +45,6 @@
     .nav-right a:hover, .nav-right button:hover {
       background: rgba(255,255,255,0.12);
     }
-    /* Cart count badge */
     .badge {
       display: inline-block;
       min-width: 18px;
@@ -63,7 +62,7 @@
 
     h2 { text-align: center; margin: 20px 0; }
 
-    /* Product grid */
+    
     .products {
       max-width: 1100px;
       margin: 0 auto 40px auto;
@@ -79,6 +78,7 @@
       padding: 12px;
       text-align: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      position: relative;
     }
     .product img {
       width: 100%;
@@ -99,7 +99,26 @@
     }
     .product button:hover { background: #990000; }
 
-    /* Cart panel */
+    
+    .popup {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: gray;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .popup.show {
+      opacity: 1;
+    }
+
+    
     #cartPanel {
       position: fixed;
       top: 0; right: 0;
@@ -138,13 +157,26 @@
     .cart-name { font-size: 14px; }
     .cart-amount { font-weight: 600; }
 
+    .qty-controls {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      margin-top: 4px;
+    }
+    .qty-controls button {
+      background: #b30000; color: white;
+      border: none; border-radius: 4px;
+      padding: 2px 6px;
+      cursor: pointer;
+      font-size: 12px;
+    }
     .remove-btn {
-      background: #b30000; color: #fff;
+      background: gray; color: #fff;
       border: none; border-radius: 4px;
       padding: 4px 8px; cursor: pointer; font-size: 12px;
       margin-left: 8px;
     }
-    .remove-btn:hover { background: #990000; }
+    .remove-btn:hover { background: #666; }
 
     .cart-actions {
       display: flex; gap: 10px; margin-top: 16px;
@@ -244,15 +276,24 @@
           <h3>${product.name}</h3>
           <p>₦${Number(product.price).toLocaleString()}</p>
           <button>Add to Cart</button>
+          <span class="popup">Added to Cart!</span>
         `;
-        card.querySelector('button').addEventListener('click', () => {
+        const btn = card.querySelector('button');
+        const popup = card.querySelector('.popup');
+
+        btn.addEventListener('click', () => {
           addToCart({
             id: product.id ?? product.name,
             name: product.name,
             price: Number(product.price),
             image: product.image
           });
+
+        
+          popup.classList.add('show');
+          setTimeout(() => popup.classList.remove('show'), 2000);
         });
+
         productsContainer.appendChild(card);
       });
 
@@ -271,6 +312,14 @@
 
     function removeFromCart(index) {
       cart.splice(index, 1);
+      saveAndRender();
+    }
+
+    function changeQuantity(index, delta) {
+      cart[index].quantity += delta;
+      if (cart[index].quantity <= 0) {
+        cart.splice(index, 1);
+      }
       saveAndRender();
     }
 
@@ -298,10 +347,16 @@
         row.className = 'cart-item';
         row.innerHTML = `
           <img class="cart-thumb" src="${item.image}" alt="${item.name}">
-          <div class="cart-name">${item.name} x${item.quantity}</div>
-          <div class="cart-amount">₦${lineTotal.toLocaleString()}
-            <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
+          <div>
+            <div class="cart-name">${item.name}</div>
+            <div class="qty-controls">
+              <button onclick="changeQuantity(${index}, -1)">-</button>
+              <span>${item.quantity}</span>
+              <button onclick="changeQuantity(${index}, 1)">+</button>
+              <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
+            </div>
           </div>
+          <div class="cart-amount">₦${lineTotal.toLocaleString()}</div>
         `;
         cartItems.appendChild(row);
       });
@@ -309,7 +364,6 @@
       cartTotal.textContent = total.toLocaleString();
       cartCount.textContent = count;
 
-      // Enable/disable checkout based on cart state
       checkoutBtn.disabled = cart.length === 0;
     }
 
@@ -325,6 +379,7 @@
     renderCart();
 
     window.removeFromCart = removeFromCart;
+    window.changeQuantity = changeQuantity;
   </script>
 </body>
 </html>

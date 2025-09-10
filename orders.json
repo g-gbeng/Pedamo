@@ -1,61 +1,35 @@
 [
   {
-    "customerName": "Testing 2",
-    "address": "3333",
-    "contact": "08144843093",
-    "cardNumber": "**** **** **** 1234",
+    "customerName": "Pedamo 1",
+    "address": "Ajao Estate",
+    "contact": "07030012808",
+    "cardNumber": "**** **** **** 0012",
     "items": [
-      {
-        "id": "Semi-Sweet Roselle",
-        "name": "Semi-Sweet Roselle",
-        "price": 9000,
-        "image": "/images/Pedamo 2.jfif",
-        "quantity": 1
-      },
       {
         "id": "Hot Roselle",
         "name": "Hot Roselle",
         "price": 9000,
-        "image": "/images/Pedamo 2.jfif",
-        "quantity": 1
-      }
-    ],
-    "total": 18000,
-    "id": "1757344112766",
-    "status": "delivered",
-    "createdAt": "2025-09-08T15:08:32.766Z"
-  },
-  {
-    "customerName": "Testing 3",
-    "address": "Chevron",
-    "contact": "43221222222",
-    "cardNumber": "**** **** **** 1111",
-    "items": [
-      {
-        "id": "Semi-Sweet Roselle",
-        "name": "Semi-Sweet Roselle",
-        "price": 9000,
-        "image": "/images/Pedamo 2.jfif",
-        "quantity": 1
-      },
-      {
-        "id": "Hot Roselle",
-        "name": "Hot Roselle",
-        "price": 9000,
-        "image": "/images/Pedamo 2.jfif",
-        "quantity": 1
+        "image": "/images/Hot.jpg",
+        "quantity": 2
       },
       {
         "id": "Mild Roselle",
         "name": "Mild Roselle",
         "price": 8000,
-        "image": "/images/Pedamo 2.jfif",
+        "image": "/images/Mild.jpg",
+        "quantity": 1
+      },
+      {
+        "id": "Sweet Roselle",
+        "name": "Sweet Roselle",
+        "price": 8500,
+        "image": "/images/Sweet.jpg",
         "quantity": 1
       }
     ],
-    "total": 26000,
-    "id": "1757344290587",
+    "total": 34500,
+    "id": "1757496368443",
     "status": "active",
-    "createdAt": "2025-09-08T15:11:30.587Z"
+    "createdAt": "2025-09-10T09:26:08.443Z"
   }
 ]

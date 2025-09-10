@@ -42,7 +42,7 @@
       cursor: pointer;
       font-size: 12px;
       margin-right: 5px;
-      width: 70px; /* ✅ ensures both buttons are equal width */
+      width: 70px; 
     }
     .deliver-btn {
       background: #28a745;
@@ -151,7 +151,7 @@
         });
         if (res.ok) {
           alert("Order marked as delivered!");
-          fetchOrders(); // Refresh table
+          fetchOrders(); 
         } else {
           alert("Failed to update order.");
         }
@@ -169,7 +169,7 @@
         });
         if (res.ok) {
           alert("Order deleted successfully!");
-          fetchOrders(); // Refresh table
+          fetchOrders(); 
         } else {
           alert("Failed to delete order.");
         }
