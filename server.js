@@ -6,11 +6,11 @@ const bodyParser = require("body-parser");
 const app = express();
 const PORT = 5000;
 
-// Middleware
+// ✅ Middleware
 app.use(express.static("public"));
 app.use(bodyParser.json());
 
-// Unified products data
+// ✅ Unified products data (now includes Pedamo Tea)
 const products = [
   {
     name: "Sweet Roselle",
@@ -36,46 +36,49 @@ const products = [
     price: 9000,
     image: "/images/SemiSweet.jpg",
   },
+  // ✅ New Pedamo Tea product
+  {
+    name: "Pedamo Tea",
+    description:
+      "A refreshing and healthy tea blend made with the finest natural ingredients. Enjoy a soothing experience that revitalizes your mind and body.",
+    price: 6500,
+    image: "/images/SemiSweet.jpg", // make sure Tea.jpg exists in public/images
+  },
 ];
 
-// Products endpoint
+// ✅ Products endpoint
 app.get("/api/products", (req, res) => {
   res.json(products);
 });
 
-// Paths to store orders
+// ✅ File paths for order logs
 const ordersFile = path.join(__dirname, "orders.json");
 const deletedOrdersFile = path.join(__dirname, "deleted_orders.json");
 
-// Ensure orders.json and deleted_orders.json exist
-if (!fs.existsSync(ordersFile)) {
-  fs.writeFileSync(ordersFile, "[]", "utf8");
-}
-if (!fs.existsSync(deletedOrdersFile)) {
-  fs.writeFileSync(deletedOrdersFile, "[]", "utf8");
-}
+// ✅ Ensure order files exist
+if (!fs.existsSync(ordersFile)) fs.writeFileSync(ordersFile, "[]", "utf8");
+if (!fs.existsSync(deletedOrdersFile)) fs.writeFileSync(deletedOrdersFile, "[]", "utf8");
 
-// Helper to safely read orders
+// ✅ Helper functions
 function readOrders() {
   try {
     const data = fs.readFileSync(ordersFile, "utf8");
     return JSON.parse(data || "[]");
-  } catch (err) {
+  } catch {
     return [];
   }
 }
 
-// Helper to safely read deleted orders
 function readDeletedOrders() {
   try {
     const data = fs.readFileSync(deletedOrdersFile, "utf8");
     return JSON.parse(data || "[]");
-  } catch (err) {
+  } catch {
     return [];
   }
 }
 
-// Save order
+// ✅ Save new order
 app.post("/api/orders", (req, res) => {
   try {
     const newOrder = req.body;
@@ -83,8 +86,8 @@ app.post("/api/orders", (req, res) => {
 
     orders.push({
       ...newOrder,
-      id: Date.now().toString(), // unique string ID
-      status: "active",          // default status
+      id: Date.now().toString(),
+      status: "active",
       createdAt: new Date().toISOString(),
     });
 
@@ -95,53 +98,40 @@ app.post("/api/orders", (req, res) => {
   }
 });
 
-// Fetch all orders
+// ✅ Get all orders
 app.get("/api/orders", (req, res) => {
-  const orders = readOrders();
-  res.json(orders);
+  res.json(readOrders());
 });
 
-// Mark order as delivered
+// ✅ Mark order as delivered
 app.put("/api/orders/:id/deliver", (req, res) => {
   try {
     const orders = readOrders();
-    const orderIndex = orders.findIndex(o => o.id === req.params.id);
+    const index = orders.findIndex(o => o.id === req.params.id);
+    if (index === -1) return res.status(404).json({ error: "Order not found" });
 
-    if (orderIndex === -1) {
-      return res.status(404).json({ error: "Order not found" });
-    }
-
-    orders[orderIndex].status = "delivered";
-
+    orders[index].status = "delivered";
     fs.writeFileSync(ordersFile, JSON.stringify(orders, null, 2), "utf8");
+
     res.json({ message: "Order marked as delivered" });
   } catch (err) {
     res.status(500).json({ error: "Error updating order" });
   }
 });
 
-// ✅ Delete order permanently & log it to deleted_orders.json
+// ✅ Delete order and log it
 app.delete("/api/orders/:id", (req, res) => {
   try {
-    let orders = readOrders();
-    const orderIndex = orders.findIndex(o => o.id === req.params.id);
+    const orders = readOrders();
+    const index = orders.findIndex(o => o.id === req.params.id);
+    if (index === -1) return res.status(404).json({ error: "Order not found" });
 
-    if (orderIndex === -1) {
-      return res.status(404).json({ error: "Order not found" });
-    }
-
-    // Get deleted order
-    const [deletedOrder] = orders.splice(orderIndex, 1);
-
-    // Append deleted order to deleted_orders.json
+    const [deletedOrder] = orders.splice(index, 1);
     const deletedOrders = readDeletedOrders();
-    deletedOrders.push({
-      ...deletedOrder,
-      deletedAt: new Date().toISOString(),
-    });
-    fs.writeFileSync(deletedOrdersFile, JSON.stringify(deletedOrders, null, 2), "utf8");
 
-    // Save updated orders.json
+    deletedOrders.push({ ...deletedOrder, deletedAt: new Date().toISOString() });
+
+    fs.writeFileSync(deletedOrdersFile, JSON.stringify(deletedOrders, null, 2), "utf8");
     fs.writeFileSync(ordersFile, JSON.stringify(orders, null, 2), "utf8");
 
     res.json({ message: "Order deleted successfully and logged" });
@@ -150,6 +140,7 @@ app.delete("/api/orders/:id", (req, res) => {
   }
 });
 
+// ✅ Start server
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });

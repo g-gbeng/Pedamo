@@ -19,8 +19,8 @@
       flex-wrap: wrap;
     }
     .hero-with-images img {
-      width: 305px;  
-      height: 305px; 
+      width: 275px;  
+      height: 275px; 
       border-radius: 12px;
       object-fit: cover;
     }
@@ -55,10 +55,32 @@
       border-radius: 50%;
       object-fit: cover;
     }
+
+    /* Pedamo Tea Section */
+    .tea-section {
+      margin: 60px auto;
+      text-align: center;
+      max-width: 700px;
+      padding: 0 20px;
+    }
+    .tea-section img {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+    .tea-section h2 {
+      color: black;
+      margin-bottom: 20px;
+    }
+    .tea-section p {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
-
 
 <header class="p-3 bg-danger border-bottom">
   <div class="container d-flex justify-content-between align-items-center">
@@ -69,11 +91,9 @@
   </div>
 </header>
 
-
 <div class="logo">
   <img src="images/Pedamo logo.jfif" alt="Brand Logo">
 </div>
-
 
 <section class="hero">
   <div class="hero-with-images">
@@ -81,16 +101,22 @@
       <h1>Welcome to Pedamo Fresh</h1>
       <p>Stay Healthy by Sipping.</p>
     </div>
-   <img src="images/Mission.jpeg" alt="Our Mission">
+    <img src="images/Mission.jpeg" alt="Our Mission">
     <img src="images/Vision.jpeg" alt="Our Vision">
   </div>
 </section>
 
-
+<!-- Variants Section -->
 <section class="container">
   <h2 class="text-center mb-4">Our Variants</h2>
-  <div id="flavors" class="flavors">
-    
+  <div id="flavors" class="flavors"></div>
+</section>
+
+<!-- 🫖 Pedamo Tea Section -->
+<section class="tea-section" id="teaSection">
+  <h2>Pedamo Tea</h2>
+  <div id="teaContent">
+    <!-- Will be filled dynamically -->
   </div>
 </section>
 
@@ -102,14 +128,15 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-
 <script>
   fetch('/api/products')
     .then(response => response.json())
     .then(products => {
+      // Populate Variants (excluding Pedamo Tea)
       const container = document.getElementById('flavors');
       container.innerHTML = ''; 
       products.forEach(product => {
+        if (product.name.toLowerCase().includes('tea')) return; // skip tea for variants
         const card = document.createElement('div');
         card.classList.add('flavor-card');
         card.innerHTML = `
@@ -119,6 +146,18 @@
         `;
         container.appendChild(card);
       });
+
+      // Populate Pedamo Tea section
+      const teaProduct = products.find(p => p.name.toLowerCase().includes('tea'));
+      const teaContent = document.getElementById('teaContent');
+      if (teaProduct) {
+        teaContent.innerHTML = `
+          <img src="${teaProduct.image}" alt="${teaProduct.name}">
+          <p>${teaProduct.description || 'A refreshing and healthy tea blend made with the finest natural ingredients.'}</p>
+        `;
+      } else {
+        teaContent.innerHTML = `<p>Coming soon! Stay tuned for our special tea blend.</p>`;
+      }
     })
     .catch(err => console.error('Error loading products:', err));
 </script>
