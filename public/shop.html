@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Shop - Pedamo Fresh</title>
   <style>
-    
     body {
       font-family: Arial, sans-serif;
       margin: 0; padding: 0;
@@ -13,7 +12,6 @@
       color: #111;
     }
 
-    
     header {
       background: #b30000;
       color: #fff;
@@ -22,38 +20,20 @@
       align-items: center;
       justify-content: space-between;
     }
-    .brand {
-      font-size: 20px;
-      font-weight: bold;
-      margin: 0;
-    }
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+    .brand { font-size: 20px; font-weight: bold; margin: 0; }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
     .nav-right a, .nav-right button {
-      color: #fff;
-      background: transparent;
+      color: #fff; background: transparent;
       border: 1px solid rgba(255,255,255,0.4);
-      padding: 6px 12px;
-      border-radius: 6px;
-      text-decoration: none;
-      cursor: pointer;
-      font-weight: 600;
+      padding: 6px 12px; border-radius: 6px;
+      text-decoration: none; cursor: pointer; font-weight: 600;
     }
-    .nav-right a:hover, .nav-right button:hover {
-      background: rgba(255,255,255,0.12);
-    }
+    .nav-right a:hover, .nav-right button:hover { background: rgba(255,255,255,0.12); }
     .badge {
       display: inline-block;
-      min-width: 18px;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: #ff2d2d;
-      color: #fff;
-      font-size: 12px;
-      font-weight: 700;
+      min-width: 18px; padding: 2px 6px;
+      border-radius: 999px; background: #ff2d2d;
+      color: #fff; font-size: 12px; font-weight: 700;
       margin-left: 4px;
     }
 
@@ -62,72 +42,53 @@
 
     h2 { text-align: center; margin: 20px 0; }
 
-    
+    /* Single-row layout for product cards */
     .products {
       max-width: 1100px;
       margin: 0 auto 40px auto;
       padding: 0 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      display: flex;
       gap: 20px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      align-items: flex-start;
+      flex-wrap: nowrap; /* ensure all cards are in one line */
     }
+    /* fixed card width so they align in a single row */
     .product {
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      background: #fff;
-      padding: 12px;
-      text-align: center;
+      flex: 0 0 220px; /* fixed width for each card */
+      border: 1px solid #ddd; border-radius: 10px;
+      background: #fff; padding: 12px; text-align: center;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
       position: relative;
     }
     .product img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      border-radius: 8px;
+      width: 100%; height: 180px; object-fit: cover; border-radius: 8px;
     }
     .product h3 { margin: 10px 0; }
     .product p { font-weight: bold; margin: 6px 0 12px 0; }
     .product button {
-      background: #b30000;
-      color: #fff;
-      border: none;
-      padding: 8px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
+      background: #b30000; color: #fff; border: none;
+      padding: 8px 12px; border-radius: 6px;
+      cursor: pointer; font-weight: 600;
     }
     .product button:hover { background: #990000; }
 
-    
     .popup {
-      position: absolute;
-      bottom: 50px;
-      left: 50%;
+      position: absolute; bottom: 52px; left: 50%;
       transform: translateX(-50%);
-      background: gray;
-      color: white;
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
+      background: gray; color: white;
+      padding: 4px 8px; border-radius: 4px;
+      font-size: 12px; opacity: 0;
+      pointer-events: none; transition: opacity 0.25s ease;
     }
-    .popup.show {
-      opacity: 1;
-    }
+    .popup.show { opacity: 1; }
 
-    
     #cartPanel {
-      position: fixed;
-      top: 0; right: 0;
+      position: fixed; top: 0; right: 0;
       width: 320px; height: 100%;
-      background: #fff;
-      box-shadow: -2px 0 8px rgba(0,0,0,0.25);
-      padding: 18px;
-      overflow-y: auto;
-      z-index: 1000;
+      background: #fff; box-shadow: -2px 0 8px rgba(0,0,0,0.25);
+      padding: 18px; overflow-y: auto; z-index: 1000;
       transform: translateX(100%);
       transition: transform .3s ease;
     }
@@ -144,31 +105,21 @@
     }
 
     .cart-item {
-      display: grid;
-      grid-template-columns: 42px 1fr auto;
+      display: grid; grid-template-columns: 42px 1fr auto;
       gap: 10px; align-items: center;
-      padding: 8px 0;
-      border-bottom: 1px solid #eee;
+      padding: 8px 0; border-bottom: 1px solid #eee;
     }
-    .cart-thumb {
-      width: 42px; height: 42px; object-fit: cover;
-      border-radius: 6px;
-    }
+    .cart-thumb { width: 42px; height: 42px; object-fit: cover; border-radius: 6px; }
     .cart-name { font-size: 14px; }
     .cart-amount { font-weight: 600; }
 
     .qty-controls {
-      display: flex;
-      gap: 4px;
-      align-items: center;
-      margin-top: 4px;
+      display: flex; gap: 4px; align-items: center; margin-top: 4px;
     }
     .qty-controls button {
       background: #b30000; color: white;
-      border: none; border-radius: 4px;
-      padding: 2px 6px;
-      cursor: pointer;
-      font-size: 12px;
+      border: none; border-radius: 4px; padding: 2px 6px;
+      cursor: pointer; font-size: 12px;
     }
     .remove-btn {
       background: gray; color: #fff;
@@ -178,32 +129,25 @@
     }
     .remove-btn:hover { background: #666; }
 
-    .cart-actions {
-      display: flex; gap: 10px; margin-top: 16px;
-    }
+    .cart-actions { display: flex; gap: 10px; margin-top: 16px; }
     .cart-actions button {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 700;
+      flex: 1; padding: 10px;
+      border: none; border-radius: 6px;
+      cursor: pointer; font-weight: 700;
     }
     #clearCart { background: gray; color: #fff; }
     #checkout  { background: #b30000; color: #fff; }
     #checkout:hover:enabled { background: #990000; }
-    #checkout:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
+    #checkout:disabled { background: #ccc; cursor: not-allowed; }
 
     footer {
-      background: #b30000;
-      color: #fff;
-      text-align: center;
-      padding: 15px;
-      margin-top: 30px;
+      background: #b30000; color: #fff;
+      text-align: center; padding: 15px; margin-top: 30px;
     }
+
+    /* hide scrollbar for nicer look (optional) */
+    .products::-webkit-scrollbar { height: 8px; }
+    .products::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.12); border-radius: 8px; }
   </style>
 </head>
 <body>
@@ -221,7 +165,8 @@
 
   <h2>Available Variants</h2>
 
-  <div id="productsContainer" class="products"></div>
+  <!-- Single products container: all products (including Pedamo Tea) will be placed here in one row -->
+  <div id="productsContainer" class="products" aria-live="polite"></div>
 
   <aside id="cartPanel" aria-hidden="true">
     <div id="cartHeader">
@@ -263,45 +208,56 @@
       cartPanel.setAttribute('aria-hidden', 'true');
     });
 
+    // load products and render as fixed-width cards in one row
     async function loadProducts() {
-      const res = await fetch('/api/products');
-      const products = await res.json();
+      try {
+        const res = await fetch('/api/products');
+        const products = await res.json();
 
-      productsContainer.innerHTML = '';
-      products.forEach(product => {
-        const card = document.createElement('div');
-        card.className = 'product';
-        card.innerHTML = `
-          <img src="${product.image}" alt="${product.name}">
-          <h3>${product.name}</h3>
-          <p>₦${Number(product.price).toLocaleString()}</p>
-          <button>Add to Cart</button>
-          <span class="popup">Added to Cart!</span>
-        `;
-        const btn = card.querySelector('button');
-        const popup = card.querySelector('.popup');
+        productsContainer.innerHTML = ''; 
+        products.forEach(product => {
+          const card = document.createElement('div');
+          card.className = 'product';
+          card.innerHTML = `
+            <img src="${product.image}" alt="${product.name}">
+            <h3>${product.name}</h3>
+            <p>₦${Number(product.price).toLocaleString()}</p>
+            <button type="button">Add to Cart</button>
+            <span class="popup" aria-hidden="true">Added to Cart!</span>
+          `;
 
-        btn.addEventListener('click', () => {
-          addToCart({
-            id: product.id ?? product.name,
-            name: product.name,
-            price: Number(product.price),
-            image: product.image
+          const btn = card.querySelector('button');
+          const popup = card.querySelector('.popup');
+
+          btn.addEventListener('click', () => {
+            addToCart({
+              id: product.id ?? product.name,
+              name: product.name,
+              price: Number(product.price),
+              image: product.image
+            });
+
+            // show popup above the button briefly
+            popup.classList.add('show');
+            popup.setAttribute('aria-hidden', 'false');
+            setTimeout(() => {
+              popup.classList.remove('show');
+              popup.setAttribute('aria-hidden', 'true');
+            }, 1600);
           });
 
-        
-          popup.classList.add('show');
-          setTimeout(() => popup.classList.remove('show'), 2000);
+          productsContainer.appendChild(card);
         });
 
-        productsContainer.appendChild(card);
-      });
-
-      renderCart();
+        renderCart();
+      } catch (err) {
+        console.error('Error loading products:', err);
+        productsContainer.innerHTML = '<p style="padding:20px;">Failed to load products.</p>';
+      }
     }
 
     function addToCart(item) {
-      const existing = cart.find(i => i.id === item.id);
+      const existing = cart.find(i => i.id === item.id || i.name === item.name);
       if (existing) {
         existing.quantity += 1;
       } else {
@@ -317,9 +273,7 @@
 
     function changeQuantity(index, delta) {
       cart[index].quantity += delta;
-      if (cart[index].quantity <= 0) {
-        cart.splice(index, 1);
-      }
+      if (cart[index].quantity <= 0) cart.splice(index, 1);
       saveAndRender();
     }
 
@@ -349,11 +303,11 @@
           <img class="cart-thumb" src="${item.image}" alt="${item.name}">
           <div>
             <div class="cart-name">${item.name}</div>
-            <div class="qty-controls">
-              <button onclick="changeQuantity(${index}, -1)">-</button>
+            <div class="qty-controls" aria-label="Quantity controls">
+              <button type="button" aria-label="Decrease" onclick="changeQuantity(${index}, -1)">-</button>
               <span>${item.quantity}</span>
-              <button onclick="changeQuantity(${index}, 1)">+</button>
-              <button class="remove-btn" onclick="removeFromCart(${index})">Remove</button>
+              <button type="button" aria-label="Increase" onclick="changeQuantity(${index}, 1)">+</button>
+              <button class="remove-btn" type="button" onclick="removeFromCart(${index})">Remove</button>
             </div>
           </div>
           <div class="cart-amount">₦${lineTotal.toLocaleString()}</div>
@@ -375,11 +329,13 @@
       }
     });
 
-    loadProducts();
-    renderCart();
-
+    // expose functions used by onclick attributes inside cart HTML
     window.removeFromCart = removeFromCart;
     window.changeQuantity = changeQuantity;
+
+    // init
+    loadProducts();
+    renderCart();
   </script>
 </body>
 </html>

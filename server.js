@@ -42,7 +42,7 @@ const products = [
     description:
       "A refreshing and healthy tea blend made with the finest natural ingredients. Enjoy a soothing experience that revitalizes your mind and body.",
     price: 6500,
-    image: "/images/SemiSweet.jpg", // make sure Tea.jpg exists in public/images
+    image: "/images/Hot.jpg", // make sure Tea.jpg exists in public/images
   },
 ];
 
