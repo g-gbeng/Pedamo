@@ -16,25 +16,25 @@ const products = [
     name: "Sweet Roselle",
     description: "A rich sweet flavor for lovers of bold taste.",
     price: 8500,
-    image: "/images/Sweet.jpg",
+    image: "/images/Sweet Roselle New.jpg",
   },
   {
     name: "Mild Roselle",
     description: "Gentle and refreshing hibiscus blend.",
     price: 8000,
-    image: "/images/Mild.jpg",
+    image: "/images/Mild Roselle New.jpg",
   },
   {
     name: "Hot Roselle",
     description: "A spicy twist with natural hibiscus tang.",
     price: 9000,
-    image: "/images/Hot.jpg",
+    image: "/images/Hot Roselle New.jpg",
   },
   {
     name: "Semi-Sweet Roselle",
     description: "Balanced sweetness for every occasion.",
     price: 9000,
-    image: "/images/SemiSweet.jpg",
+    image: "/images/Semi Sweet Roselle New.jpg",
   },
   // ✅ New Pedamo Tea product
   {
